@@ -39,7 +39,7 @@ class IssueViewModelTest : TestCase() {
     }
 
     @Test
-    fun testRequestPeoples_whenFetchDataFromRemoteORLocalDatabase_thenCheckPeopleList() {
+    fun testRequestIssues_whenFetchDataFromRemoteORLocalDatabase_thenCheckIssueList() {
         testCoroutineRule.runBlockingTest {
             doReturn(flowOf { emptyList<Issue>() })
                 .`when`(repository)
@@ -48,7 +48,7 @@ class IssueViewModelTest : TestCase() {
             val viewModel = IssueViewModel(repository)
             viewModel.issues.observeForever(observer)
             viewModel.issueIntent.send(IssueIntent.FetchLocalIssue)
-            verify(repository).fetchRemotePeoples()
+            verify(repository).fetchRemoteIssues()
             viewModel.issues.removeObserver(observer)
         }
     }

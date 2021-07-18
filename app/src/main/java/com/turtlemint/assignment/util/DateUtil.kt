@@ -8,15 +8,18 @@ import java.util.*
  */
 object DateUtil {
 
+    private const val SOURCE_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+    private const val TARGET_DATE_FORMAT = "MM-dd-yyyyy"
+
     /**
      * Gets the date time in standard format.
      */
     fun getStandardTime(timeStamp: String?): String {
         var result = ""
         try {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+            val dateFormat = SimpleDateFormat(SOURCE_DATE_FORMAT)
             val date = dateFormat.parse(timeStamp!!)
-            val sdf = SimpleDateFormat("MM-dd-yyyyy", Locale.getDefault())
+            val sdf = SimpleDateFormat(TARGET_DATE_FORMAT, Locale.getDefault())
             result = date?.let { sdf.format(it) } ?: ""
         } catch (e: Exception) {
             e.printStackTrace()

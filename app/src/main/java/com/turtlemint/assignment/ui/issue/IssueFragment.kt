@@ -45,7 +45,6 @@ class IssueFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        observerIssues()
         observerState()
     }
 
@@ -56,23 +55,11 @@ class IssueFragment : Fragment() {
         adapter = IssueAdapter(viewModel) {
             if (!it.commentsUrl.isNullOrEmpty()) {
                 val direction =
-                    IssueFragmentDirections.actionIssueFragmentToCommentFragment(it.commentsUrl)
+                    IssueFragmentDirections.actionIssueFragmentToCommentFragment(it.commentsUrl, it.title!!)
                 findNavController().navigate(direction)
             }
         }
         binding.recyclerView.adapter = adapter
-    }
-
-    /**
-     * Observes the peoples data and set to the recycler view.
-     */
-    private fun observerIssues() {
-        viewModel.issues.observe(viewLifecycleOwner, {
-            if (!it.isNullOrEmpty()) {
-                binding.tvEmpty.visibility = View.GONE
-            }
-            adapter.submitList(it)
-        })
     }
 
     /**
@@ -86,13 +73,31 @@ class IssueFragment : Fragment() {
                         viewModel.issueIntent.send(IssueIntent.FetchLocalIssue)
                     }
                     is IssueState.Loading -> {
+                        if (it.isLoading) {
+                            setViewVisibility(View.GONE, View.GONE, View.VISIBLE)
+                        } else {
+                            setViewVisibility(View.VISIBLE, View.GONE, View.GONE)
+                        }
+                    }
+                    is IssueState.Success -> {
+                        adapter.submitList(it.list)
                     }
                     is IssueState.Error -> {
+                        setViewVisibility(View.GONE, View.VISIBLE, View.GONE)
                         it.message?.let { message -> shoToast(message) }
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Update view visibility.
+     */
+    private fun setViewVisibility(recyclerView: Int, emptyText: Int, progressBar: Int) {
+        binding.recyclerView.visibility = recyclerView
+        binding.tvEmpty.visibility = emptyText
+        binding.progressCircular.visibility = progressBar
     }
 
     /**

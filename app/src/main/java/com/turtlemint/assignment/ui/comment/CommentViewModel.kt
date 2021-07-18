@@ -59,6 +59,7 @@ class CommentViewModel(private val repository: CommentRepository) : ViewModel() 
                 _state.value = CommentState.Loading(true)
                 when (val fetchComments = repository.fetchRemoteComments(url)) {
                     is Result.Success -> {
+                        _state.value = CommentState.Loading(false)
                         _state.value = CommentState.Success(fetchComments.data)
                     }
                     is Result.Error -> {
@@ -66,7 +67,6 @@ class CommentViewModel(private val repository: CommentRepository) : ViewModel() 
                             CommentState.Error("Please check the network connection and try again")
                     }
                 }
-                _state.value = CommentState.Loading(false)
             } catch (e: Exception) {
                 Log.d(TAG, "Error while fetching the data")
                 _state.value = CommentState.Loading(false)

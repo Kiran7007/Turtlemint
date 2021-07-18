@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import com.turtlemint.assignment.adapters.CommentAdapter
 import com.turtlemint.assignment.databinding.CommentFragmentBinding
 import kotlinx.coroutines.flow.collect
@@ -33,6 +34,11 @@ class CommentFragment : Fragment() {
      */
     private lateinit var adapter: CommentAdapter
 
+    /**
+     * Fragment arguments.
+     */
+    private val arguments: CommentFragmentArgs by navArgs()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,6 +57,7 @@ class CommentFragment : Fragment() {
      * Initialize the view.
      */
     private fun initView() {
+        binding.tvTitle.text = arguments.title
         adapter = CommentAdapter(viewModel)
         binding.recyclerView.adapter = adapter
     }
@@ -63,24 +70,34 @@ class CommentFragment : Fragment() {
             viewModel.state.collect {
                 when (it) {
                     is CommentState.Idle -> {
-                        val commentUrl =
-                            CommentFragmentArgs.fromBundle(requireArguments()).commentUrl
-                        viewModel.commentIntent.send(CommentIntent.FetchComment(commentUrl))
+                        viewModel.commentIntent.send(CommentIntent.FetchComment(arguments.commentUrl))
                     }
                     is CommentState.Loading -> {
+                        if (it.isLoading) {
+                            setViewVisibility(View.GONE, View.GONE, View.VISIBLE)
+                        } else {
+                            setViewVisibility(View.VISIBLE, View.GONE, View.GONE)
+                        }
                     }
                     is CommentState.Success -> {
-                        if (!it.list.isNullOrEmpty()) {
-                            binding.tvEmpty.visibility = View.GONE
-                        }
                         adapter.submitList(it.list)
                     }
                     is CommentState.Error -> {
+                        setViewVisibility(View.GONE, View.VISIBLE, View.GONE)
                         it.message?.let { message -> shoToast(message) }
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Update view visibility.
+     */
+    private fun setViewVisibility(recyclerView: Int, emptyText: Int, progressBar: Int) {
+        binding.recyclerView.visibility = recyclerView
+        binding.tvEmpty.visibility = emptyText
+        binding.progressCircular.visibility = progressBar
     }
 
     /**
