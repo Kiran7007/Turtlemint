@@ -2,13 +2,14 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 android {
     compileSdkVersion versions.compile_sdk
 
     defaultConfig {
-        applicationId "com.peopleinteractive.shaadi"
+        applicationId "com.turtlemint.assignment"
         minSdkVersion versions.min_sdk
         targetSdkVersion versions.target_sdk
         multiDexEnabled true
@@ -18,7 +19,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "BASE_URL", "\"https://randomuser.me/\""
+        buildConfigField "String", "BASE_URL", "\"https://api.github.com/\""
     }
 
     buildTypes {
