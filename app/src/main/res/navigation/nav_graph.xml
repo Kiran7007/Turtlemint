@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/issueFragment"
         android:name="com.turtlemint.assignment.ui.issue.IssueFragment"
-        android:label="IssueFragment"
+        android:label="Issues"
         tools:layout="@layout/issue_fragment" >
         <action
             android:id="@+id/action_issueFragment_to_commentFragment"
@@ -17,7 +17,7 @@
         android:id="@+id/commentFragment"
         android:name="com.turtlemint.assignment.ui.comment.CommentFragment"
         tools:layout="@layout/issue_fragment"
-        android:label="CommentFragment" >
+        android:label="Comments" >
         <argument
             android:name="commentUrl"
             app:argType="string" />

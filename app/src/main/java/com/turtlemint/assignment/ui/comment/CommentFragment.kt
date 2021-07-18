@@ -44,7 +44,6 @@ class CommentFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        observerIssues()
         observerState()
     }
 
@@ -54,18 +53,6 @@ class CommentFragment : Fragment() {
     private fun initView() {
         adapter = CommentAdapter(viewModel)
         binding.recyclerView.adapter = adapter
-    }
-
-    /**
-     * Observes the peoples data and set to the recycler view.
-     */
-    private fun observerIssues() {
-        viewModel.comments.observe(viewLifecycleOwner, {
-            if (!it.isNullOrEmpty()) {
-                binding.tvEmpty.visibility = View.GONE
-            }
-            adapter.submitList(it)
-        })
     }
 
     /**
@@ -81,6 +68,12 @@ class CommentFragment : Fragment() {
                         viewModel.commentIntent.send(CommentIntent.FetchComment(commentUrl))
                     }
                     is CommentState.Loading -> {
+                    }
+                    is CommentState.Success -> {
+                        if (!it.list.isNullOrEmpty()) {
+                            binding.tvEmpty.visibility = View.GONE
+                        }
+                        adapter.submitList(it.list)
                     }
                     is CommentState.Error -> {
                         it.message?.let { message -> shoToast(message) }

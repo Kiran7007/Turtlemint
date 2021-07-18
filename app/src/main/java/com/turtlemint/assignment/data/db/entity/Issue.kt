@@ -11,23 +11,47 @@ data class Issue(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
     @Json(name = "id")
-    val id: Long,
+    val id: Long? = 0,
 
     @Json(name = "title")
     @ColumnInfo(name = "title")
-    val title: String,
+    val title: String? = "",
 
     @Json(name = "comments_url")
     @ColumnInfo(name = "commentsUrl")
-    val commentsUrl: String?,
+    val commentsUrl: String? = "",
 
     @Json(name = "body")
     @ColumnInfo(name = "description")
-    val description: String,
+    val description: String? = "",
 
     @Json(name = "updated_at")
     @ColumnInfo(name = "updatedAt")
-    val updatedAt: String,
+    val updatedAt: String? = "",
+
+    @Embedded
+    @Json(name = "user")
+    val user: User,
+) {
+    fun getUpdateTime() = DateUtil.getStandardTime(updatedAt)
+
+    fun getShortDescription() = description?.take(200)
+}
+
+@Entity(tableName = "comment")
+data class Comment(
+    @PrimaryKey(autoGenerate = false)
+    @Json(name = "id")
+    @ColumnInfo(name = "id")
+    val id: Long? = 0,
+
+    @Json(name = "body")
+    @ColumnInfo(name = "comment")
+    val comment: String,
+
+    @Json(name = "updated_at")
+    @ColumnInfo(name = "updatedAt")
+    val updatedAt: String? = "",
 
     @Embedded
     @Json(name = "user")
@@ -36,32 +60,12 @@ data class Issue(
     fun getUpdateTime() = DateUtil.getStandardTime(updatedAt)
 }
 
-@Entity(tableName = "comment")
-data class Comment(
-    @PrimaryKey(autoGenerate = false)
-    @Json(name = "id")
-    @ColumnInfo(name = "id")
-    val id: Long,
-
-    @Json(name = "body")
-    @ColumnInfo(name = "description")
-    val description: String,
-
-    @Json(name = "updated_at")
-    @ColumnInfo(name = "updatedAt")
-    val updatedAt: String,
-
-    @Embedded
-    @Json(name = "user")
-    val user: User,
-)
-
 data class User(
     @Json(name = "login")
     @ColumnInfo(name = "username")
-    val username: String,
+    val username: String? = "",
 
     @Json(name = "avatar_url")
     @ColumnInfo(name = "avatarUrl")
-    val avatarUrl: String,
+    val avatarUrl: String? = "",
 )

@@ -11,11 +11,11 @@ object DateUtil {
     /**
      * Gets the date time in standard format.
      */
-    fun getStandardTime(timeStamp: String): String {
-        var result: String = ""
+    fun getStandardTime(timeStamp: String?): String {
+        var result = ""
         try {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault())
-            val date = dateFormat.parse(timeStamp)
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+            val date = dateFormat.parse(timeStamp!!)
             val sdf = SimpleDateFormat("MM-dd-yyyyy", Locale.getDefault())
             result = date?.let { sdf.format(it) } ?: ""
         } catch (e: Exception) {
